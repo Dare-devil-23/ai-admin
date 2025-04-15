@@ -4,8 +4,12 @@ import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent } from "./Tabs";
 import { cn } from "../../lib/utils";
 import { Bold, Italic, List, ListOrdered, Link as LinkIcon, Code, Image, Heading1, Heading2, Save, X } from 'lucide-react';
-
-import DirectMathContent from "./DirectMathContent";
+import ReactMarkdown from 'react-markdown';
+import remarkMath from "remark-math";
+import rehypeMathjax from "rehype-mathjax";
+import remarkGfm from 'remark-gfm';
+import rehypeKatex from 'rehype-katex';
+import rehypeRaw from "rehype-raw";
 
 interface MarkdownEditorProps {
   content: string;
@@ -30,7 +34,7 @@ export function MarkdownEditor({
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
-  
+
   // Update activeTab when readOnly changes
   useEffect(() => {
     setActiveTab(readOnly ? "preview" : "edit");
@@ -73,10 +77,10 @@ export function MarkdownEditor({
       const beforeText = content.substring(0, start);
       const afterText = content.substring(end);
       const newText = beforeText + prefix + selectedText + suffix + afterText;
-      
+
       onChange(newText);
       setHasUnsavedChanges(true);
-      
+
       // Set selection to after the inserted markdown
       setTimeout(() => {
         textarea.focus();
@@ -88,67 +92,67 @@ export function MarkdownEditor({
 
   const editorToolbar = (
     <div className="flex items-center gap-1 p-2 border-b overflow-x-auto">
-      <button 
-        className="p-1.5 rounded hover:bg-secondary" 
+      <button
+        className="p-1.5 rounded hover:bg-secondary"
         onClick={() => insertMarkdown('# ')}
         title="Heading 1"
       >
         <Heading1 size={16} />
       </button>
-      <button 
-        className="p-1.5 rounded hover:bg-secondary" 
+      <button
+        className="p-1.5 rounded hover:bg-secondary"
         onClick={() => insertMarkdown('## ')}
         title="Heading 2"
       >
         <Heading2 size={16} />
       </button>
       <div className="w-px h-6 bg-border mx-1"></div>
-      <button 
-        className="p-1.5 rounded hover:bg-secondary" 
+      <button
+        className="p-1.5 rounded hover:bg-secondary"
         onClick={() => insertMarkdown('**', '**')}
         title="Bold"
       >
         <Bold size={16} />
       </button>
-      <button 
-        className="p-1.5 rounded hover:bg-secondary" 
+      <button
+        className="p-1.5 rounded hover:bg-secondary"
         onClick={() => insertMarkdown('*', '*')}
         title="Italic"
       >
         <Italic size={16} />
       </button>
       <div className="w-px h-6 bg-border mx-1"></div>
-      <button 
-        className="p-1.5 rounded hover:bg-secondary" 
+      <button
+        className="p-1.5 rounded hover:bg-secondary"
         onClick={() => insertMarkdown('- ')}
         title="Bullet List"
       >
         <List size={16} />
       </button>
-      <button 
-        className="p-1.5 rounded hover:bg-secondary" 
+      <button
+        className="p-1.5 rounded hover:bg-secondary"
         onClick={() => insertMarkdown('1. ')}
         title="Numbered List"
       >
         <ListOrdered size={16} />
       </button>
       <div className="w-px h-6 bg-border mx-1"></div>
-      <button 
-        className="p-1.5 rounded hover:bg-secondary" 
+      <button
+        className="p-1.5 rounded hover:bg-secondary"
         onClick={() => insertMarkdown('[', '](url)')}
         title="Link"
       >
         <LinkIcon size={16} />
       </button>
-      <button 
-        className="p-1.5 rounded hover:bg-secondary" 
+      <button
+        className="p-1.5 rounded hover:bg-secondary"
         onClick={() => insertMarkdown('![alt text](', ')')}
         title="Image"
       >
         <Image size={16} />
       </button>
-      <button 
-        className="p-1.5 rounded hover:bg-secondary" 
+      <button
+        className="p-1.5 rounded hover:bg-secondary"
         onClick={() => insertMarkdown('```\n', '\n```')}
         title="Code Block"
       >
@@ -156,7 +160,7 @@ export function MarkdownEditor({
       </button>
       <div className="flex-grow"></div>
       <div className="flex gap-2">
-        <button 
+        <button
           className={`px-3 py-1.5 rounded text-xs font-medium ${hasUnsavedChanges ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}
           onClick={handleSave}
           disabled={!hasUnsavedChanges}
@@ -167,7 +171,7 @@ export function MarkdownEditor({
             Save
           </span>
         </button>
-        <button 
+        <button
           className="px-3 py-1.5 rounded bg-secondary text-xs font-medium flex items-center gap-1"
           onClick={handleCancelEdit}
           title="Cancel"
@@ -186,13 +190,13 @@ export function MarkdownEditor({
         <h3 className="text-lg font-bold mb-4">Unsaved Changes</h3>
         <p className="mb-6">You have unsaved changes. Are you sure you want to exit the editor?</p>
         <div className="flex justify-end gap-3">
-          <button 
+          <button
             className="px-4 py-2 bg-secondary text-foreground rounded"
             onClick={() => setShowConfirmation(false)}
           >
             Cancel
           </button>
-          <button 
+          <button
             className="px-4 py-2 bg-destructive text-destructive-foreground rounded"
             onClick={confirmCancelEdit}
           >
@@ -217,11 +221,15 @@ export function MarkdownEditor({
             disabled={readOnly}
           />
         </TabsContent>
-        
+
         <TabsContent value="preview" className="p-4">
           <div className="prose max-w-none dark:prose-invert">
             {content ? (
-              <DirectMathContent content={content} /> 
+              <ReactMarkdown
+                children={content}
+                remarkPlugins={[remarkMath]}
+                rehypePlugins={[rehypeMathjax, rehypeRaw]}
+              />
             ) : (
               <p className="text-muted-foreground italic">No content to preview</p>
             )}

@@ -2,15 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent } from "./Tabs";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-import rehypeRaw from "rehype-raw";
-import { cn, convertLatexBlocks } from "../../lib/utils";
+import { cn } from "../../lib/utils";
 import { Bold, Italic, List, ListOrdered, Link as LinkIcon, Code, Image, Heading1, Heading2, Save, X } from 'lucide-react';
 
-import 'katex/dist/katex.min.css';
+import DirectMathContent from "./DirectMathContent";
 
 interface MarkdownEditorProps {
   content: string;
@@ -226,12 +221,7 @@ export function MarkdownEditor({
         <TabsContent value="preview" className="p-4">
           <div className="prose max-w-none dark:prose-invert">
             {content ? (
-              <ReactMarkdown
-                remarkPlugins={[remarkMath, remarkGfm]}
-                rehypePlugins={[rehypeKatex, rehypeRaw]}
-              >
-                {convertLatexBlocks(content)}
-              </ReactMarkdown>
+              <DirectMathContent content={content} /> 
             ) : (
               <p className="text-muted-foreground italic">No content to preview</p>
             )}

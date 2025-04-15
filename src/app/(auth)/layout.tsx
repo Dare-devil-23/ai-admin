@@ -18,8 +18,8 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
     // Check for authentication
     // const checkAuth = () => {
     //   const authed = isAuthenticated();
-    //   setIsAuthed(authed);
-    //   setIsLoading(false);
+      setIsAuthed(true);
+      setIsLoading(false);
       
     //   if (!authed) {
     //     router.push("/login");

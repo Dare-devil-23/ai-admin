@@ -1,0 +1,1 @@
+module.exports = {"static":{"version":"0.1"},"server":{"port":""},"backendConfig":{"platform":{"domain":"https://user-1014105386081.asia-south1.run.app","port":"","folder":""}},"analytics":{"ga":{"trackerId":"","domain":""}},"mode":"PROD"};

@@ -3,15 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "robotTextGenerator": "node ./scripts/generateRobotsTxt.ts",
+    "createConfig": "node ./scripts/createConfig.ts",
+    "dev": "set NODE_ENV=local && npm run createConfig && npm run robotTextGenerator && next dev -p 3000",
+    "build": "set NODE_ENV=prod && npm run createConfig && npm run robotTextGenerator && next build",
+    "build:qa": "export NODE_ENV=qa && npm run createConfig && npm run robotTextGenerator && next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@radix-ui/react-tabs": "^1.1.4",
     "@uiw/react-md-editor": "^4.0.5",
+    "axios": "^1.8.4",
     "clsx": "^2.1.1",
+    "firebase": "^11.6.0",
     "katex": "^0.16.22",
     "lucide-react": "^0.488.0",
     "next": "15.3.0",

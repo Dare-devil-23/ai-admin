@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Layout from "../../components/ui/Layout";
-import { Upload, ChevronRight, File, Plus, Edit, Pencil } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/Card";
-import Sidebar, { Topic } from "../../components/ui/Sidebar";
-import { MarkdownEditor } from "../../components/ui/MarkdownEditor";
-import { FileUpload } from "../../components/ui/FileUpload";
-import { useTopicFile, uploadFile } from "../../services/fileService";
+import { Upload, File } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/Card";
+import Sidebar, { Topic } from "../../../components/ui/Sidebar";
+import { MarkdownEditor } from "../../../components/ui/MarkdownEditor";
+import { FileUpload } from "../../../components/ui/FileUpload";
+import { useTopicFile, uploadFile } from "../../../services/fileService";
 
 const DUMMY_TOPICS: Topic[] = [
   {
@@ -27,61 +26,6 @@ const DUMMY_TOPICS: Topic[] = [
     ],
   },
 ];
-
-const DUMMY_CONTENT = {
-  book: `# Chapter Overview
-  
-This is the book content for this chapter. It contains detailed explanations of concepts and formulas.
-
-## Key Concepts
-
-- First principle
-- Second principle
-- Third principle
-
-### Formulas
-
-$$E = mc^2$$
-
-### Examples
-
-Here are some examples to illustrate the concepts discussed in this chapter...`,
-
-  "ai-notes": `# AI Generated Notes
-
-These notes highlight the most important concepts from the chapter.
-
-## Main Takeaways
-
-1. First important point with simplified explanation
-2. Second important point with practical applications
-3. Third important point with diagrams and illustrations
-
-### Quick Reference
-
-| Concept | Definition | Application |
-| ------- | ---------- | ----------- |
-| Term 1 | Definition 1 | Where to use |
-| Term 2 | Definition 2 | Where to use |`,
-
-  "question-bank": `# Practice Questions
-
-## Multiple Choice
-
-1. What is the correct formula for calculating X?
-   - a) X = Y²
-   - b) X = Y + Z
-   - c) X = Y × Z
-   - d) X = Y ÷ Z
-
-2. Which of the following is true about concept Z?
-
-## Problems
-
-1. Calculate the value of X when Y = 5 and Z = 3.
-
-2. Explain the relationship between X and Y in your own words.`
-};
 
 export default function TopicsPage() {
   const [topics] = useState(DUMMY_TOPICS);
@@ -109,6 +53,10 @@ export default function TopicsPage() {
     if (file) {
       try {
         setMarkdownContent(file.content || '# No content available\n\nThis section has no content yet.');
+        // Reset unsaved changes flag when loading new content
+        if (hasUnsavedChanges) {
+          setHasUnsavedChanges(false);
+        }
       } catch (error) {
         console.error('Error setting markdown content:', error);
         setMarkdownContent('# Error loading content\n\nThere was an error loading this content. Please try again later.');
@@ -118,8 +66,19 @@ export default function TopicsPage() {
     }
   }, [file]);
 
+  // Handle content change in editor
+  const handleContentChange = (newContent: string) => {
+    setMarkdownContent(newContent);
+    setHasUnsavedChanges(true);
+  };
+
   // Safe tab change with confirmation if needed
   const handleTabChange = (newTab: 'book' | 'ai-notes' | 'question-bank') => {
+    // Skip if trying to navigate to the current tab
+    if (activeTab === newTab) {
+      return;
+    }
+    
     if (isEditMode && hasUnsavedChanges) {
       // Store the pending tab change and show confirmation
       setPendingTabChange(newTab);
@@ -142,12 +101,6 @@ export default function TopicsPage() {
     }
   };
 
-  // Handle content change in editor
-  const handleContentChange = (newContent: string) => {
-    setMarkdownContent(newContent);
-    setHasUnsavedChanges(true);
-  };
-
   // Handle save content
   const handleSaveContent = () => {
     if (file) {
@@ -157,6 +110,7 @@ export default function TopicsPage() {
       });
     }
     setHasUnsavedChanges(false);
+    setIsEditMode(false);
     
     // If there was a pending navigation, handle it now
     if (pendingTabChange) {
@@ -218,16 +172,40 @@ export default function TopicsPage() {
     setPendingSubtopicChange(null);
   };
 
-  // Handle file upload - just use dummy data
-  const handleFileUpload = (content: string, fileName: string) => {
+  // Handle file upload - use existing markdown files
+  const handleFileUpload = async (content: string, fileName: string) => {
     if (selectedSubtopic) {
-      // Upload dummy data for all three content types
-      uploadFile(selectedSubtopic, "book", DUMMY_CONTENT.book, `${fileName}_book.md`);
-      uploadFile(selectedSubtopic, "ai-notes", DUMMY_CONTENT["ai-notes"], `${fileName}_ai_notes.md`);
-      uploadFile(selectedSubtopic, "question-bank", DUMMY_CONTENT["question-bank"], `${fileName}_questions.md`);
-      
-      // Set current tab content
-      setMarkdownContent(DUMMY_CONTENT[activeTab]);
+      try {
+        // Fetch the content from the markdown files in the public directory
+        const bookResponse = await fetch('/markdown/math/algebra_book.md');
+        const aiNotesResponse = await fetch('/markdown/math/algebra_ai_notes.md');
+        const questionsResponse = await fetch('/markdown/math/algebra_questions.md');
+        
+        if (!bookResponse.ok || !aiNotesResponse.ok || !questionsResponse.ok) {
+          throw new Error('Failed to fetch markdown files');
+        }
+        
+        const bookContent = await bookResponse.text();
+        const aiNotesContent = await aiNotesResponse.text();
+        const questionsContent = await questionsResponse.text();
+        
+        // Upload the content for all three types
+        uploadFile(selectedSubtopic, "book", bookContent, `${fileName}_book.md`);
+        uploadFile(selectedSubtopic, "ai-notes", aiNotesContent, `${fileName}_ai_notes.md`);
+        uploadFile(selectedSubtopic, "question-bank", questionsContent, `${fileName}_questions.md`);
+        
+        // Set current tab content based on active tab
+        if (activeTab === 'book') {
+          setMarkdownContent(bookContent);
+        } else if (activeTab === 'ai-notes') {
+          setMarkdownContent(aiNotesContent);
+        } else {
+          setMarkdownContent(questionsContent);
+        }
+      } catch (error) {
+        console.error('Error fetching markdown files:', error);
+        setMarkdownContent('# Error loading content\n\nThere was an error loading the markdown files. Please try again later.');
+      }
     }
   };
 
@@ -269,9 +247,9 @@ export default function TopicsPage() {
   );
 
   return (
-    <Layout className="bg-background">
+    <>
       {confirmationDialog}
-      <div className="flex flex-col md:flex-row h-[calc(100vh-6rem)] gap-4">
+      <div className="flex flex-col md:flex-row md:h-[calc(100vh-90px)] gap-4">
         <Sidebar
           topics={topics}
           selectedSubtopic={selectedSubtopic}
@@ -289,7 +267,10 @@ export default function TopicsPage() {
                       ? "text-primary border-b-2 border-primary"
                       : "text-muted-foreground hover:text-foreground"
                       }`}
-                    onClick={() => handleTabChange("book")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleTabChange("book");
+                    }}
                   >
                     Book
                   </button>
@@ -298,7 +279,10 @@ export default function TopicsPage() {
                       ? "text-primary border-b-2 border-primary"
                       : "text-muted-foreground hover:text-foreground"
                       }`}
-                    onClick={() => handleTabChange("ai-notes")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleTabChange("ai-notes");
+                    }}
                   >
                     AI Notes
                   </button>
@@ -307,7 +291,10 @@ export default function TopicsPage() {
                       ? "text-primary border-b-2 border-primary"
                       : "text-muted-foreground hover:text-foreground"
                       }`}
-                    onClick={() => handleTabChange("question-bank")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleTabChange("question-bank");
+                    }}
                   >
                     Question Bank
                   </button>
@@ -374,8 +361,12 @@ export default function TopicsPage() {
                           content={markdownContent}
                           onChange={handleContentChange}
                           readOnly={!isEditMode}
-                          onSave={handleSaveContent}
-                          onCancelEdit={handleCancelEdit}
+                          onSave={() => {
+                            handleSaveContent();
+                          }}
+                          onCancelEdit={() => {
+                            handleCancelEdit();
+                          }}
                         />
                       )}
                     </CardContent>
@@ -411,6 +402,6 @@ export default function TopicsPage() {
           )}
         </div>
       </div>
-    </Layout>
+    </>
   );
 }

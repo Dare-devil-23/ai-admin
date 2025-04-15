@@ -8,7 +8,6 @@ import ReactMarkdown from 'react-markdown';
 import remarkMath from "remark-math";
 import rehypeMathjax from "rehype-mathjax";
 import remarkGfm from 'remark-gfm';
-import rehypeKatex from 'rehype-katex';
 import rehypeRaw from "rehype-raw";
 
 interface MarkdownEditorProps {
@@ -226,9 +225,16 @@ export function MarkdownEditor({
           <div className="prose max-w-none dark:prose-invert">
             {content ? (
               <ReactMarkdown
-                children={content}
-                remarkPlugins={[remarkMath]}
+                remarkPlugins={[remarkMath, remarkGfm]}
                 rehypePlugins={[rehypeMathjax, rehypeRaw]}
+                urlTransform={(url: string) => url}
+                components={{
+                  img: ({ node, ...props }) => props?.src && <img {...props} className="max-w-full" />,
+                  table: ({ node, ...props }) => <table {...props} className="border-collapse table-auto w-full" />,
+                  th: ({ node, ...props }) => <th {...props} className="border border-slate-300 dark:border-slate-700 px-4 py-2 text-left" />,
+                  td: ({ node, ...props }) => <td {...props} className="border border-slate-300 dark:border-slate-700 px-4 py-2" />
+                }}
+                children={content}
               />
             ) : (
               <p className="text-muted-foreground italic">No content to preview</p>

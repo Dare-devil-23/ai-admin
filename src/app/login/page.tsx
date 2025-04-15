@@ -29,9 +29,9 @@ export default function LoginPage() {
 
   // Check if already logged in
   useEffect(() => {
-    if (isAuthenticated()) {
-      router.push('/');
-    }
+    // if (isAuthenticated()) {
+    //   router.push('/');
+    // }
   }, [router]);
 
   return (

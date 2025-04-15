@@ -1,1 +1,53 @@
-Consider the given expression,<br />     ${{S}_{n}}=\frac{1}{1+\sqrt{n}}+\frac{1}{2+\sqrt{2n}}+\ldots +\frac{1}{n+\sqrt{{{n}^{2}}}}$ <br />This can be converted to summation as,<br />     $${{S}_{n}}=\underset{r=1}{\overset{n}{\mathop \sum }}\,\frac{1}{r+\sqrt{rn}}$$<br /> Now we will apply limits, we get<br />     $\underset{n\to \infty }{\mathop{\lim }}\,{{S}_{n}}=\underset{n\to \infty }{\mathop{\lim }}\,\underset{r=1}{\overset{n}{\mathop \sum }}\,\frac{1}{r+\sqrt{rn}}$ <br />Dividing numerator and denominator by  n, we get<br />     $\underset{n\to \infty }{\mathop{\lim }}\,{{S}_{n}}=\underset{n\to \infty }{\mathop{\lim }}\,\underset{r=1}{\overset{n}{\mathop \sum }}\,\frac{\frac{1}{n}}{\frac{\left( r+\sqrt{rn} \right)}{n}}$ <br />     $\Rightarrow \underset{n\to \infty }{\mathop{\lim }}\,{{S}_{n}}=\underset{n\to \infty }{\mathop{\lim }}\,\underset{r=1}{\overset{n}{\mathop \sum }}\,\frac{\frac{1}{n}}{\frac{r}{n}+\frac{\sqrt{rn}}{n}}$ <br />     $\Rightarrow \underset{n\to \infty }{\mathop{\lim }}\,{{S}_{n}}=\underset{n\to \infty }{\mathop{\lim }}\,\underset{r=1}{\overset{n}{\mathop \sum }}\,\frac{\frac{1}{n}}{\frac{r}{n}+\sqrt{\frac{rn}{{{n}^{2}}}}}$ <br />     $\Rightarrow \underset{n\to \infty }{\mathop{\lim }}\,{{S}_{n}}=\underset{n\to \infty }{\mathop{\lim }}\,\underset{r=1}{\overset{n}{\mathop \sum }}\,\frac{\frac{1}{n}}{\frac{r}{n}+\sqrt{\frac{r}{n}}}\ldots \ldots \left( i \right)$ $$$$ <br />Now let,<br />     $\frac{r}{n}=x\Rightarrow \frac{1}{n}=dx$ <br />Let’s find the limits,<br />When $$r=1\Rightarrow x=0$$<br />When $r=n\Rightarrow x=1$ <br />Considering these values the summation can be written as integral form. We get,<br />     $\underset{r=1}{\overset{n}{\mathop \sum }}\,\frac{\frac{1}{n}}{\frac{r}{n}+\sqrt{\frac{r}{n}}}=\underset{0}{\overset{1}{\mathop \int }}\,\frac{dx}{x+\sqrt{x}}\ldots \ldots \ldots \left( ii \right)$ <br />Now we will find the integration as follows:<br />     $\underset{0}{\overset{1}{\mathop \int }}\,\frac{dx}{x+\sqrt{x}}=\underset{0}{\overset{1}{\mathop \int }}\,\frac{dx}{\sqrt{x}\left( \sqrt{x}+1 \right)}\ldots \ldots .\left( iii \right)$ <br />Let’s substitute,<br />     $u=\sqrt{x}+1$ <br />Differentiating, we get<br />     $du=\frac{1}{2\sqrt{x}}dx\Rightarrow dx=2\sqrt{x}du$ <br />Substituting these values in equation (iii), we get<br />     $\underset{0}{\overset{1}{\mathop \int }}\,\frac{dx}{x+\sqrt{x}}=\underset{0}{\overset{1}{\mathop \int }}\,\frac{2\sqrt{x}du}{\sqrt{x}\left( u \right)}$ <br />     $\underset{0}{\overset{1}{\mathop \int }}\,\frac{dx}{x+\sqrt{x}}=2\underset{0}{\overset{1}{\mathop \int }}\,\frac{1}{u}du$ <br />But we know, $\mathop{\int }^{}\frac{1}{u}=\ln u$ , so above equation becomes,<br />     $\underset{0}{\overset{1}{\mathop \int }}\,\frac{dx}{x+\sqrt{x}}=2\left[ lnu \right]_{0}^{1}$ <br />Substituting back the value of u, we get<br />     $\underset{0}{\overset{1}{\mathop \int }}\,\frac{dx}{x+\sqrt{x}}=2\left[ \ln (\sqrt{x}+1) \right]_{0}^{1}$ <br />Applying the upper and lower bounds, we get<br />     $\underset{0}{\overset{1}{\mathop \int }}\,\frac{dx}{x+\sqrt{x}}=2\left[ \ln (\sqrt{1}+1 \right)\left] -2 \right[\ln (\sqrt{0}+1)]$ <br />     $\underset{0}{\overset{1}{\mathop \int }}\,\frac{dx}{x+\sqrt{x}}=2\left[ \ln 2\left] -2 \right[\ln (1 \right)]$ <br />But we know, $ln1=0$, so we get<br />     $\underset{0}{\overset{1}{\mathop \int }}\,\frac{dx}{x+\sqrt{x}}=2\left[ ln2 \right]-0$ <br />     $\underset{0}{\overset{1}{\mathop \int }}\,\frac{dx}{x+\sqrt{x}}=\left[ \ln {{2}^{2}} \right]=\ln 4$ <br />Substituting this in equation (ii), we get<br />     $\underset{r=1}{\overset{n}{\mathop \sum }}\,\frac{\frac{1}{n}}{\frac{r}{n}+\sqrt{\frac{r}{n}}}=\ln 4$ <br />Substituting this value in equation (i), we get<br />     $\Rightarrow \underset{n\to \infty }{\mathop{\lim }}\,{{S}_{n}}=\underset{n\to \infty }{\mathop{\lim }}\,\ln 4$ <br />As the RHS is free of variable, so we can remove the limit, so we get<br />     $\Rightarrow \underset{n\to \infty }{\mathop{\lim }}\,{{S}_{n}}=\ln 4$ <br />Note:  The possibility for the mistake is that in the following equation,<br />     $\Rightarrow \underset{n\to \infty }{\mathop{\lim }}\,{{S}_{n}}=\underset{n\to \infty }{\mathop{\lim }}\,\underset{r=1}{\overset{n}{\mathop \sum }}\,\frac{\frac{1}{n}}{\frac{r}{n}+\sqrt{\frac{rn}{{{n}^{2}}}}}$ <br />we see that the n2 term becomes ‘n’ when taken out of the square root.<br />So, instead of dividing by n2 we can just divide the ‘r’ by ‘n’ and we won’t get the same answer.<br /><br /><br />
+# Algebra Fundamentals
+
+## Introduction to Algebra
+
+Algebra is a branch of mathematics dealing with symbols and the rules for manipulating these symbols. In elementary algebra, those symbols (today written as Latin and Greek letters) represent quantities without fixed values, known as variables.
+
+## Key Concepts
+
+### Variables and Constants
+
+- **Variables**: Symbols that represent unknown values (typically x, y, z)
+- **Constants**: Fixed values that don't change (numbers, π, e)
+
+### Expressions and Equations
+
+An algebraic expression is a combination of variables, constants, and operations:
+- $2x + 3y - 5$
+- $x^2 + 2xy + y^2$
+
+An equation states that two expressions are equal:
+- $x + 5 = 12$
+- $2x - 3y = 7$
+
+## Solving Linear Equations
+
+A linear equation has the form $ax + b = 0$ where $a$ and $b$ are constants.
+
+### Steps to solve:
+1. Move all terms with the variable to one side
+2. Move all constants to the other side
+3. Divide both sides by the coefficient of the variable
+
+**Example:**
+Solve $3x - 7 = 11$
+
+$3x - 7 + 7 = 11 + 7$  
+$3x = 18$  
+$x = 6$  
+
+## Quadratic Equations
+
+A quadratic equation has the form $ax^2 + bx + c = 0$ where $a \neq 0$.
+
+### Quadratic Formula:
+For $ax^2 + bx + c = 0$, the solutions are:
+
+$$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$$
+
+## Practice Problems
+
+1. Solve: $5x + 3 = 18$
+2. Factor: $x^2 - 9$
+3. Solve using the quadratic formula: $2x^2 - 5x + 3 = 0$ 

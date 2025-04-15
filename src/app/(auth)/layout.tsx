@@ -16,17 +16,17 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
   
   useEffect(() => {
     // Check for authentication
-    const checkAuth = () => {
-      const authed = isAuthenticated();
-      setIsAuthed(authed);
-      setIsLoading(false);
+    // const checkAuth = () => {
+    //   const authed = isAuthenticated();
+    //   setIsAuthed(authed);
+    //   setIsLoading(false);
       
-      if (!authed) {
-        router.push("/login");
-      }
-    };
+    //   if (!authed) {
+    //     router.push("/login");
+    //   }
+    // };
     
-    checkAuth();
+    // checkAuth();
   }, [router]);
 
   // Show loading state while checking auth

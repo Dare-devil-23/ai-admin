@@ -1,17 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./Tabs";
+import { Tabs, TabsContent } from "./Tabs";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
-import { cn } from "../../lib/utils";
+import { cn, convertLatexBlocks } from "../../lib/utils";
 import { Bold, Italic, List, ListOrdered, Link as LinkIcon, Code, Image, Heading1, Heading2, Save, X } from 'lucide-react';
 
-// Import KaTeX styles in your global CSS or add them here
-// import 'katex/dist/katex.min.css';
+import 'katex/dist/katex.min.css';
 
 interface MarkdownEditorProps {
   content: string;
@@ -228,10 +227,10 @@ export function MarkdownEditor({
           <div className="prose max-w-none dark:prose-invert">
             {content ? (
               <ReactMarkdown
-                remarkPlugins={[remarkGfm, remarkMath]}
+                remarkPlugins={[remarkMath, remarkGfm]}
                 rehypePlugins={[rehypeKatex, rehypeRaw]}
               >
-                {content}
+                {convertLatexBlocks(content)}
               </ReactMarkdown>
             ) : (
               <p className="text-muted-foreground italic">No content to preview</p>

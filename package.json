@@ -6,7 +6,7 @@
     "robotTextGenerator": "node ./scripts/generateRobotsTxt.ts",
     "createConfig": "node ./scripts/createConfig.ts",
     "dev": "set NODE_ENV=local && npm run createConfig && npm run robotTextGenerator && next dev -p 3000",
-    "build": "set NODE_ENV=prod && npm run createConfig && npm run robotTextGenerator && next build",
+    "build": "export NODE_ENV=prod && npm run createConfig && npm run robotTextGenerator && next build",
     "build:qa": "export NODE_ENV=qa && npm run createConfig && npm run robotTextGenerator && next build",
     "start": "next start",
     "lint": "next lint"
